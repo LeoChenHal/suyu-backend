@@ -7,9 +7,14 @@ import com.lch.suyu.Result.Result;
 import com.lch.suyu.constant.MessageConstant;
 import com.lch.suyu.exception.BusinessException;
 import com.lch.suyu.mapper.TeamMapper;
-import com.lch.suyu.pojo.dto.TeamDto;
+import com.lch.suyu.pojo.dto.TeamQueryDto;
+import com.lch.suyu.pojo.dto.TeamRequestDto;
 import com.lch.suyu.pojo.entity.Team;
+import com.lch.suyu.pojo.entity.User;
+import com.lch.suyu.service.TeamService;
+import com.lch.suyu.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +29,11 @@ import java.util.List;
 public class TeamController {
     @Autowired
     private TeamMapper teamMapper;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TeamService teamService;
 
     @GetMapping("/get")
     public Result<Team> getTeamById(Integer teamId) {
@@ -48,43 +58,50 @@ public class TeamController {
     }
 
     @PutMapping("/update")
-    public Result<Integer> updateTeam(@RequestBody TeamDto teamDto) {
+    public Result<Integer> updateTeam(@RequestBody TeamQueryDto teamDto) {
         if (teamDto == null) {
             throw new BusinessException(MessageConstant.PARAMS_NULL);
         }
+
         Team team = new Team();
-        BeanUtil.copyProperties(teamDto,team);
+        BeanUtil.copyProperties(teamDto, team);
         int i = teamMapper.updateById(team);
         return Result.success(i);
     }
 
-    @PostMapping ("/add")
-    public Result<Integer> addTeam(@RequestBody TeamDto teamDto) {
+    @PostMapping("/add")
+    public Result<Integer> addTeam(@RequestBody TeamRequestDto teamDto, HttpServletRequest request) {
         if (teamDto == null) {
             throw new BusinessException(MessageConstant.PARAMS_NULL);
         }
+        User loginUser = userService.getCurrentUser(request);
+
         Team team = new Team();
-        BeanUtil.copyProperties(teamDto,team);
-        int i = teamMapper.insert(team);
+        BeanUtil.copyProperties(teamDto, team);
+        teamService.addTeam(team,loginUser);
         return Result.success(i);
     }
 
     @GetMapping("/list")
-    public Result<List<Team>> getTeamList(TeamDto teamDto) {
+    public Result<List<Team>> getTeamList( TeamQueryDto teamQueryDto) {
+        if (teamQueryDto == null) {
+            throw new BusinessException(MessageConstant.PARAMS_NULL);
+        }
         Team team = new Team();
-        BeanUtil.copyProperties(teamDto,team);
+        BeanUtil.copyProperties(teamQueryDto, team);
         List<Team> teamList = teamMapper.selectList(new QueryWrapper<>(team));
         return Result.success(teamList);
     }
+
     @GetMapping("/list/page")
-    public Result<List<Team>> getListByPage(TeamDto teamDto) {
+    public Result<List<Team>> getListByPage( TeamQueryDto teamQueryDto) {
+        if (teamQueryDto == null) {
+            throw new BusinessException(MessageConstant.PARAMS_NULL);
+        }
         Team team = new Team();
-        BeanUtil.copyProperties(teamDto,team);
-        Page<Team> teamPage = new Page<>(teamDto.getPageNum(), teamDto.getPageSize());
+        BeanUtil.copyProperties(teamQueryDto, team);
+        Page<Team> teamPage = new Page<>(teamQueryDto.getPageNum(), teamQueryDto.getPageSize());
         List<Team> teamList = teamMapper.selectPage(teamPage, null).getRecords();
         return Result.success(teamList);
     }
-
-
-
 }

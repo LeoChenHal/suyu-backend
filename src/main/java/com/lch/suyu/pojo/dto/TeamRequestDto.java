@@ -1,19 +1,14 @@
 package com.lch.suyu.pojo.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
-
-/**
- * 队伍查询封装类
- */
+import java.util.Date;
 @Data
-@AllArgsConstructor
-public class TeamDto  extends PageDto implements Serializable{
-
-    private Integer id;
-
+public class TeamRequestDto implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -5108353769948901936L;
     /**
      * 队伍名称
      */
@@ -29,7 +24,10 @@ public class TeamDto  extends PageDto implements Serializable{
      */
     private Integer maxNum;
 
-
+    /**
+     * 队伍过期时间
+     */
+    private Date expireTime;
 
     /**
      * 队伍创建者id
@@ -41,7 +39,11 @@ public class TeamDto  extends PageDto implements Serializable{
      */
     private Integer status;
 
+    /**
+     * 队伍密码
+     */
+    private String teamPwd;
 
 
-    private static final long serialVersionUID = 1L;
+
 }

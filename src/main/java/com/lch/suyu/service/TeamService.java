@@ -2,6 +2,7 @@ package com.lch.suyu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lch.suyu.pojo.entity.Team;
+import com.lch.suyu.pojo.entity.User;
 
 /**
 * @author Administrator
@@ -10,4 +11,5 @@ import com.lch.suyu.pojo.entity.Team;
 */
 public interface TeamService extends IService<Team> {
 
+    void addTeam(Team team, User loginUser);
 }
