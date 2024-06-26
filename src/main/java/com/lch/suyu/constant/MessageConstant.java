@@ -6,7 +6,7 @@ public class MessageConstant {
     public static final String PASSWORD_ERROR="密码校验失败";
     public static final String NOT_LOGIN="用户未登录";
 
-
+    public static final String PARAMS_ERROR="传入的请求参数校验错误";
 
 
 }
