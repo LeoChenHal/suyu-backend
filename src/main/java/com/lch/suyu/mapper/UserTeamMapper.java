@@ -1,7 +1,8 @@
 package com.lch.suyu.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import generator.domain.UserTeam;
+import com.lch.suyu.pojo.entity.UserTeam;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author Administrator
@@ -9,6 +10,7 @@ import generator.domain.UserTeam;
 * @createDate 2024-06-26 18:21:06
 * @Entity generator.domain.UserTeam
 */
+@Mapper
 public interface UserTeamMapper extends BaseMapper<UserTeam> {
 
 }

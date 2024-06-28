@@ -1,9 +1,10 @@
 package com.lch.suyu.service.impl;
 
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import generator.domain.UserTeam;
-import generator.mapper.UserTeamMapper;
-import generator.service.UserTeamService;
+import com.lch.suyu.mapper.UserTeamMapper;
+import com.lch.suyu.pojo.entity.UserTeam;
+import com.lch.suyu.service.UserTeamService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class UserTeamServiceImpl extends ServiceImpl<UserTeamMapper, UserTeam>
-    implements UserTeamService{
+    implements UserTeamService {
 
 }
 

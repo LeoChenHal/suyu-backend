@@ -214,7 +214,8 @@ private RedisTemplate redisTemplate;
      */
     public boolean isAdmin(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute(UserConstant.USER_LOGIN_STATUS);
-        return user != null && user.getIsAdmin().equals(UserConstant.ADMIN_ROLE);
+
+        return user != null && UserConstant.ADMIN_ROLE.equals(user.getIsAdmin());
     }
 
     /**

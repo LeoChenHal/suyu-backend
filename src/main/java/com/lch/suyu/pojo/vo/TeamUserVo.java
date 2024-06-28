@@ -1,31 +1,25 @@
-package com.lch.suyu.pojo.dto;
+package com.lch.suyu.pojo.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
- * 队伍查询封装类
+ *
  */
 @Data
-@AllArgsConstructor
-public class TeamQueryDto extends PageDto implements Serializable{
-
+public class TeamUserVo implements Serializable {
     @Serial
-    private static final long serialVersionUID = 7867666217752129060L;
-    private Integer id;
+    private static final long serialVersionUID = -3102651983835486166L;
 
+    private Integer id;
     /**
      * 队伍名称
      */
     private String teamName;
-
-    /**
-     * 搜索文本，可以根据队伍名字或者标签搜索
-     */
-    private String searchText;
 
     /**
      * 队伍描述
@@ -37,7 +31,10 @@ public class TeamQueryDto extends PageDto implements Serializable{
      */
     private Integer maxNum;
 
-
+    /**
+     * 队伍过期时间
+     */
+    private Date expireTime;
 
     /**
      * 队伍创建者id
@@ -48,6 +45,8 @@ public class TeamQueryDto extends PageDto implements Serializable{
      * 队伍状态 0-公开 1-私有 2-加密
      */
     private Integer status;
-
-
+    /**
+     * 队伍创建者信息
+     */
+    private UserVo user;
 }

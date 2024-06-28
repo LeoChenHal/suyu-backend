@@ -9,8 +9,10 @@ import com.lch.suyu.exception.BusinessException;
 import com.lch.suyu.mapper.TeamMapper;
 import com.lch.suyu.pojo.dto.TeamQueryDto;
 import com.lch.suyu.pojo.dto.TeamRequestDto;
+import com.lch.suyu.pojo.dto.TeamUpdateDto;
 import com.lch.suyu.pojo.entity.Team;
 import com.lch.suyu.pojo.entity.User;
+import com.lch.suyu.pojo.vo.TeamUserVo;
 import com.lch.suyu.service.TeamService;
 import com.lch.suyu.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,15 +60,15 @@ public class TeamController {
     }
 
     @PutMapping("/update")
-    public Result<Integer> updateTeam(@RequestBody TeamQueryDto teamDto) {
+    public Result<Boolean> updateTeam(@RequestBody TeamUpdateDto teamDto,HttpServletRequest request) {
         if (teamDto == null) {
             throw new BusinessException(MessageConstant.PARAMS_NULL);
         }
 
         Team team = new Team();
         BeanUtil.copyProperties(teamDto, team);
-        int i = teamMapper.updateById(team);
-        return Result.success(i);
+        Boolean result=teamService.updateTeam(team,request);
+        return Result.success(result);
     }
 
     @PostMapping("/add")
@@ -75,21 +77,21 @@ public class TeamController {
             throw new BusinessException(MessageConstant.PARAMS_NULL);
         }
         User loginUser = userService.getCurrentUser(request);
-
         Team team = new Team();
         BeanUtil.copyProperties(teamDto, team);
-        teamService.addTeam(team,loginUser);
+        int i=teamService.addTeam(team,loginUser);
         return Result.success(i);
     }
 
     @GetMapping("/list")
-    public Result<List<Team>> getTeamList( TeamQueryDto teamQueryDto) {
+    public Result<List<TeamUserVo>> getTeamList(TeamQueryDto teamQueryDto,HttpServletRequest request) {
         if (teamQueryDto == null) {
             throw new BusinessException(MessageConstant.PARAMS_NULL);
         }
         Team team = new Team();
         BeanUtil.copyProperties(teamQueryDto, team);
-        List<Team> teamList = teamMapper.selectList(new QueryWrapper<>(team));
+        boolean admin = userService.isAdmin(request);
+        List<TeamUserVo> teamList = teamService.getTeamList(teamQueryDto,admin);
         return Result.success(teamList);
     }
 

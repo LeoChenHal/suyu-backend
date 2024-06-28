@@ -1,8 +1,13 @@
 package com.lch.suyu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lch.suyu.pojo.dto.TeamQueryDto;
 import com.lch.suyu.pojo.entity.Team;
 import com.lch.suyu.pojo.entity.User;
+import com.lch.suyu.pojo.vo.TeamUserVo;
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 /**
 * @author Administrator
@@ -11,5 +16,10 @@ import com.lch.suyu.pojo.entity.User;
 */
 public interface TeamService extends IService<Team> {
 
-    void addTeam(Team team, User loginUser);
+    int addTeam(Team team, User loginUser);
+
+    List<TeamUserVo> getTeamList(TeamQueryDto teamQueryDto, boolean admin);
+
+    Boolean updateTeam(Team team, HttpServletRequest request);
+
 }
