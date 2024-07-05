@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 队伍查询封装类
@@ -17,6 +18,7 @@ public class TeamQueryDto extends PageDto implements Serializable{
     private static final long serialVersionUID = 7867666217752129060L;
     private Integer id;
 
+    private List<Integer> idList;
     /**
      * 队伍名称
      */

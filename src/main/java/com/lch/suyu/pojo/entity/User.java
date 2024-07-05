@@ -47,7 +47,7 @@ public class User implements Serializable {
      * 手机号码
      */
     @TableField(value = "phone")
-    private Integer phone;
+    private String phone;
 
     /**
      * 邮箱
@@ -139,11 +139,11 @@ public class User implements Serializable {
         this.userPassword = userPassword;
     }
 
-    public Integer getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Integer phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

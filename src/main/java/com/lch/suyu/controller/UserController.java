@@ -1,6 +1,7 @@
 package com.lch.suyu.controller;
 
 import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -101,6 +102,21 @@ public class UserController {
     @GetMapping("/recommend")
     public Result<List<User>> recommendUser(int pageSize, int pageNum,HttpServletRequest request){
         return Result.success(userService.recommendUser(pageSize,pageNum,request));
+    }
+    /**
+     * 获取最匹配的用户
+     *
+     * @param num
+     * @param request
+     * @return
+     */
+    @GetMapping("/match")
+    public Result<List<User>> matchUsers(long num, HttpServletRequest request) {
+        if (num <= 0 || num > 20) {
+            throw new BusinessException(MessageConstant.PARAMS_ERROR);
+        }
+        User user = userService.getCurrentUser(request);
+        return Result.success(userService.matchUsers(num, user));
     }
 
 }

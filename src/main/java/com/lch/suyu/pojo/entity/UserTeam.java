@@ -1,11 +1,9 @@
 package com.lch.suyu.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,10 +14,12 @@ import java.util.Date;
 @TableName(value ="user_team")
 @Data
 public class UserTeam implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 4227463856790859518L;
     /**
      * 主键
      */
-    @TableId
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -53,6 +53,5 @@ public class UserTeam implements Serializable {
     @TableLogic
     private Integer isDelete;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+
 }

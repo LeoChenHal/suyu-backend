@@ -99,28 +99,6 @@ class UserServiceImplTest {
         System.out.println(redisTemplate.opsForValue().get("user"));
     }
 
-    @Test
-    void watchDogTest() {
-        RLock lock = redisson.getLock(RedisConstant.SUYU_LOCK_KEY + 3);
-        try {
-            //尝试获取锁对象,不填参数则没有等待时间，锁过期时间默认30秒（看门狗）
-            if (lock.tryLock(0, -1, TimeUnit.SECONDS)) {
-//                String key = RedisConstant.SUYU_RECOMMEND_KEY + 3;
-//                List<User> userList = (List<User>) redisTemplate.opsForValue().get(key);
-//                if (userList != null && !userList.isEmpty()) {
-//                    return;
-//                }
-//                Page<User> userPage = new Page<>(1, 20);
-//                Page<User> page = userMapper.selectPage(userPage, null);
-//                redisTemplate.opsForValue().set(key, page.getRecords(), 30, TimeUnit.SECONDS);
-                Thread.sleep(10000000);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            //释放锁对象,只能释放自己的锁
-            if (lock.isHeldByCurrentThread())
-                lock.unlock();
-        }
-    }
+
+
 }

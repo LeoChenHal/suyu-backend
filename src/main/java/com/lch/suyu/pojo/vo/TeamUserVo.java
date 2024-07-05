@@ -5,7 +5,6 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -14,7 +13,9 @@ import java.util.List;
 public class TeamUserVo implements Serializable {
     @Serial
     private static final long serialVersionUID = -3102651983835486166L;
-
+    /**
+     * 主键id
+     */
     private Integer id;
     /**
      * 队伍名称
@@ -35,6 +36,10 @@ public class TeamUserVo implements Serializable {
      * 队伍过期时间
      */
     private Date expireTime;
+    /**
+     * 队伍创建时间
+     */
+    private Date createTime;
 
     /**
      * 队伍创建者id
@@ -49,4 +54,11 @@ public class TeamUserVo implements Serializable {
      * 队伍创建者信息
      */
     private UserVo user;
+    /**
+     * 已加入队伍的人数
+     */
+
+    private Integer hasJoinNum;
+
+    private boolean hasJoin;
 }

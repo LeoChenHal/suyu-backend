@@ -1,5 +1,7 @@
 package com.lch.suyu.service.impl;
 
+import cn.hutool.core.lang.Pair;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,6 +13,7 @@ import com.lch.suyu.exception.BusinessException;
 import com.lch.suyu.pojo.entity.User;
 import com.lch.suyu.service.UserService;
 import com.lch.suyu.mapper.UserMapper;
+import com.lch.suyu.utils.AlgorithmUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,8 +23,10 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -203,7 +208,7 @@ private RedisTemplate redisTemplate;
             //修改成功则删除缓存，这样下次触发数据库查询时就会更新缓存，保证数据高一致性
             redisTemplate.delete(key);
         }
-        return 0;
+        return i;
     }
 
     @Override
@@ -241,6 +246,57 @@ private RedisTemplate redisTemplate;
         redisTemplate.opsForValue().set(key,page.getRecords(),30,TimeUnit.SECONDS);
 
         return page.getRecords();
+    }
+
+    @Override
+    public List<User> matchUsers(long num, User loginUser) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "tags");
+        queryWrapper.isNotNull("tags");
+        List<User> userList = this.list(queryWrapper);
+        String tags = loginUser.getTags();
+//        Gson gson = new Gson();
+//        List<String> tagList = gson.fromJson(tags, new TypeToken<List<String>>() {
+//        }.getType());
+        List<String> tagList = JSONUtil.toList(tags, String.class);
+        // 用户列表的下标 => 相似度
+        List<Pair<User, Long>> list = new ArrayList<>();
+        // 依次计算所有用户和当前用户的相似度
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
+            String userTags = user.getTags();
+            // 无标签或者为当前用户自己
+            if (StringUtils.isBlank(userTags) || user.getId() == loginUser.getId()) {
+                continue;
+            }
+            List<String> userTagList = JSONUtil.toList(userTags, String.class);
+//            List<String> userTagList = gson.fromJson(userTags, new TypeToken<List<String>>() {
+//            }.getType());
+            // 计算分数
+            long distance = AlgorithmUtils.minDistance(tagList, userTagList);
+            list.add(new Pair<>(user, distance));
+        }
+        // 按编辑距离由小到大排序
+        List<Pair<User, Long>> topUserPairList = list.stream()
+                .sorted((a, b) -> (int) (a.getValue() - b.getValue()))
+                .limit(num)
+                .collect(Collectors.toList());
+        // 原本顺序的 userId 列表
+        List<Integer> userIdList = topUserPairList.stream().map(pair -> pair.getKey().getId()).collect(Collectors.toList());
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.in("id", userIdList);
+        // 1, 3, 2
+        // User1、User2、User3
+        // 1 => User1, 2 => User2, 3 => User3
+        Map<Integer, List<User>> userIdUserListMap = this.list(userQueryWrapper)
+                .stream()
+                .map(user -> getSafetyUser(user))
+                .collect(Collectors.groupingBy(User::getId));
+        List<User> finalUserList = new ArrayList<>();
+        for (Integer userId : userIdList) {
+            finalUserList.add(userIdUserListMap.get(userId).get(0));
+        }
+        return finalUserList;
     }
 
 }

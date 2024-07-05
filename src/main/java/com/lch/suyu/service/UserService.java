@@ -64,4 +64,6 @@ public interface UserService extends IService<User> {
    boolean isAdmin(HttpServletRequest request);
 
     List<User> recommendUser(int pageSize, int pageNum, HttpServletRequest request);
+
+    List<User> matchUsers(long num, User user);
 }
