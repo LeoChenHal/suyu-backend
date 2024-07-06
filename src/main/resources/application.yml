@@ -4,6 +4,8 @@ spring:
 #    关闭springboot图标
   main:
     banner-mode: off
+  profiles:
+    active: prod
 #    配置数据库和连接池信息
   datasource:
     username: root
@@ -14,6 +16,7 @@ spring:
   session:
     timeout: 5000
     store-type: redis
+
   data:
     redis:
       host: 127.0.0.1

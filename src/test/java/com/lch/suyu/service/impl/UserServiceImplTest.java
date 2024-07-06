@@ -77,7 +77,7 @@ class UserServiceImplTest {
                 user.setUsername("测试用户");
                 user.setUserAccount("testlch");
                 user.setUserPassword("123456");
-                user.setPhone(123456);
+                user.setPhone("123456");
                 user.setEmail("123@qq.com");
                 user.setAvatarUrl("https://i.postimg.cc/sXqKQWdJ/20230714140118.jpg");
                 user.setUserStatus(1);
